@@ -2,7 +2,9 @@
 
 Требуется написать алгоритм автоконтрастирования изображения:
 
-def autocontrast(src_img_path, dst_img_path, white_percent, black_percent)
+```
+def autocontrast(img: np.ndarray, white_percent: float, black_percent: float) -> np.ndarray:
+```
 
 white_percent - доля наиболее светлых пикселей, которые нужно сделать белым (255) (например, 0.1)
 black_percent - доля наиболее темных пикселей, которые нужно сделать черным (0) (например, 0.2)
