@@ -1,8 +1,51 @@
 import sys, os.path, cv2, numpy as np
+import math
 
+class point(object):
+    def __init__(self, I, J, color):
+        self.H = I
+        self.W = J
+        self.col = color
+
+
+def byCol_key(point):
+    return point.col
 
 def autocontrast(img: np.ndarray, white_percent: float, black_percent: float) -> np.ndarray:
-    pass  # insert your code here
+    height = len(img)
+    width = len(img[0])
+    KEKmass = []
+    KEKout = np.ones((height, width), dtype = int)
+    for i in range(height):
+        for j in range(width):
+            KEKout[i][j] = -KEKout[i][j]
+            KEKmass.append(point(i, j, img[i][j]))
+    KEKsorted = sorted(KEKmass, key=byCol_key)
+
+    passblack = math.ceil(height * width * black_percent)
+    passwhite = height * width - math.ceil(height * width * white_percent)
+    c = 0
+
+    while (KEKsorted[c].col <= KEKsorted[passblack - 1].col):
+        KEKout[KEKsorted[c].H][KEKsorted[c].W] = 0
+        c = c + 1
+
+    c1 = height * width - 1
+    while (KEKsorted[c1].col >= KEKsorted[passwhite].col and c1 >= c):
+        KEKout[KEKsorted[c1].H][KEKsorted[c1].W] = 255
+        c1 = c1 - 1
+
+    upperBound = img[KEKsorted[c1 + 1].H][KEKsorted[c1 + 1].W]
+    lowerBound = img[KEKsorted[c - 1].H][KEKsorted[c - 1].W]
+    kekMul =  255.0/(upperBound - lowerBound)
+
+    for i in range(height):
+        for j in range(width):
+            if (KEKout[i][j] == -1):
+                KEKout[i][j] = round((int(img[i][j]) - lowerBound) * kekMul)
+
+    return KEKout
+    pass
 
 
 def main():
